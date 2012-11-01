@@ -142,7 +142,7 @@ public class EmbeddedServer {
 	void startServer() throws Exception {
 
 		if (autoPort) {
-			for (int p = connector.getPort(); p < 65000; p++) {
+			for (int p = autoPortLower; p < autoPortUpper; p++) {
 				connector.setPort(p);
 				try {
 					server.start();
