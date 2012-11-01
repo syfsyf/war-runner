@@ -163,7 +163,7 @@ public class EmbeddedServer {
 
 	private void loadProperties() throws IOException {
 
-		InputStream propsStream = Runner.class.getClassLoader()
+		InputStream propsStream = EmbeddedServer.class.getClassLoader()
 				.getResourceAsStream(props);
 
 		properties.put("app.icon", "app-icon.png");
