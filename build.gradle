@@ -1,0 +1,54 @@
+defaultTasks 'clean', 'uploadArchives'
+
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven' 
+// apply from: 'https://launchpadlibrarian.net/86359290/apply.groovy'
+
+project.ext.mainClassName = "org.syfsyf.warrunner.EmbeddedServer"
+
+sourceCompatibility = 1.5
+version = '0.1'
+group = 'org.syfsyf'
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'War Runner', 
+				   'Implementation-Version': version,
+				   'Main-Class':project.ext.mainClassName
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	compile 'org.mortbay.jetty:jetty:6.1.26',
+			'com.beust:jcommander:1.29'
+    testCompile 'junit:junit:4.10'
+            
+}
+
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('../local-repo'))
+        }
+    }
+} 
+
+
+// correct eclipse classpath order 
+// http://stackoverflow.com/questions/12836089/why-is-eclipse-not-attaching-3rd-party-libs-source-files-to-a-wtp-faceted-gradle
+eclipse.classpath.file {
+	// Classpath entry for Eclipse which changes the order of classpathentries; otherwise no sources for 3rd party jars are shown
+	withXml { xml ->
+		def node = xml.asNode()
+		node.remove( node.find { it.@path == 'org.eclipse.jst.j2ee.internal.web.container' } )
+		node.appendNode( 'classpathentry', [ kind: 'con', path: 'org.eclipse.jst.j2ee.internal.web.container', exported: 'true'])
+	}
+}
+
